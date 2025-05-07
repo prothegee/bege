@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 # version
 set(BEGE_VERSION_MAJOR 0)
 set(BEGE_VERSION_MINOR 1)
-set(BEGE_VERSION_PATCH 0)
+set(BEGE_VERSION_PATCH 1)
 set(BEGE_VERSION_RELEASE_DATE 20250507)
 
 set(BEGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -19,6 +19,10 @@ project(bege
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BEGE_SOURCE_DIR}/addons/bege/bin") # skipped for now
 
 # bege variables
+## bege is debug
+if(NOT DEFINED BEGE_IS_DEBUG)
+    set(BEGE_IS_DEBUG true)
+endif()
 ## bege build processor
 if(NOT DEFINED BEGE_PROCESSOR_SYSTEM)
     set(BEGE_PROCESSOR_SYSTEM)
@@ -33,6 +37,7 @@ if(NOT DEFINED BEGE_BUILD_TARGET_INFO)
     set(BEGE_BUILD_TARGET_INFO)
 
     if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+        set(BEGE_IS_DEBUG false)
         set(BEGE_BUILD_TARGET_INFO "release")
     else()
         set(BEGE_BUILD_TARGET_INFO "debug")
@@ -53,6 +58,10 @@ endif()
 ## bege vcpkg installed dir
 if(NOT DEFINED BEGE_VCPKG_DIR)
     set(BEGE_VCPKG_DIR)
+endif()
+## bege python3
+if(NOT DEFINED BEGE_PYTHON3_EXEC)
+    set(BEGE_PYTHON3_EXEC)
 endif()
 
 # check requirements
@@ -147,6 +156,14 @@ endif()
 add_subdirectory("${BEGE_GODOT_CPP_DIR}" BEGE_GODOT_CPP)
 ## triplet and processor
 if(ANDROID)
+    if(ANDROID_ABI STREQUAL "")
+        message(FATAL_ERROR "-- bege: ANDROID_ABI is empty, please provide 1; armeabi-v7a for arm32, arm64-v8a for arm64, x86_64 for x86_64 emulator?")
+    endif()
+    if(NOT ANDROID_PLATFORM)
+        message(WARNING "-- bege: ANDROID_PLATFORM is not set, using default min api, see https://en.wikipedia.org/wiki/Android_version_history#Overview")
+    endif()
+    
+    
     message(NOTICE "-- becc: ANDROID_ABI: ${ANDROID_ABI}")
     message(NOTICE "-- becc: ANDROID_PLATFORM: ${ANDROID_PLATFORM}")
 
@@ -164,6 +181,9 @@ if(ANDROID)
     endif()
 
     set(BEGE_BUILD_SYSTEM_INFO "android")
+
+    message(STATUS "TODO: include dir from java")
+    message(STATUS "TODO: include dir from android")
 elseif(WIN32)
     # windows architectures
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
@@ -240,6 +260,24 @@ else()
     message(FATAL_ERROR "-- ${PROJECT_NAME}: vpckg error")
 endif()
 
+# package
+## find: python3, required to build object docs
+if(NOT DEFINED Python3_EXECUTABLE)
+    set(Python3_EXECUTABLE)
+endif()
+find_package(Python3)
+if(Python3_FOUND)
+    message(NOTICE "-- bege: found python3 as \"${Python3_EXECUTABLE}\"")
+    set(BEGE_PYTHON3_EXEC "${Python3_EXECUTABLE}")
+else()
+    if(Python3_EXECUTABLE STREQUAL "")
+        message(FATAL_ERROR "-- bege: python3 required, if package not found, try add -DPython3_EXECUTABLE=to/path/python3_exec")
+    else()
+        message(NOTICE "-- bege: can't found python3 package, but able to found python3 exec")
+        set(BEGE_PYTHON3_EXEC "${Python3_EXECUTABLE}")
+    endif()
+endif()
+
 # project lib
 ## project core lib
 add_library(${PROJECT_NAME} SHARED ${BEGE_SOURCES_FILES})
@@ -264,6 +302,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 ### any specific?
 
 # link libraries
+## godot-cpp
+target_link_libraries(${PROJECT_NAME} PRIVATE godot-cpp)
 ## openssl
 find_package(OpenSSL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
@@ -335,5 +375,30 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
 else()
     message(NOTICE "-- ${PROJECT_NAME}: -DCMAKE_CXX_COMPILER_ID is not supported as ${CMAKE_CXX_COMPILER_ID}")
 endif()
+
+# # TMP: do not remove, generate docs class
+# ## kinda bothering for now & too lazy @prothegee
+# if(BEGE_IS_DEBUG AND BEGE_PYTHON3_EXEC)
+#     message(NOTICE "-- bege: creating documentation for debug")
+
+#     set(BEGE_DOC_DATA_GEN_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/sources/src/documentations.gen.cc")
+
+#     # force remove before generating again
+#     file(REMOVE "${BEGE_DOC_DATA_GEN_SOURCE}")
+
+#     file(GLOB_RECURSE BEGE_DOC_XML
+#         LIST_DIRECTORIES NO
+#         CONFIGURE_DEPENDS
+#         "${CMAKE_CURRENT_SOURCE_DIR}/sources/xml/*.xml"
+#     )
+
+#     generate_doc_source("${BEGE_DOC_DATA_GEN_SOURCE}" "${BEGE_DOC_XML}")
+
+#     target_sources(${PROJECT_NAME} PRIVATE "${BEGE_DOC_DATA_GEN_SOURCE}")
+# endif()
+
+# reserved: config
+
+# reserved: export
 
 # reserved: TODO - post build, if any

@@ -1,0 +1,33 @@
+[configuration]
+entry_symbol            = "bege_entry_rt"
+compatibility_minimum   = "4.4"
+reloadable              = true
+
+# [icons]
+# Foo     = "assets/icons/svg/Foo.svg"
+
+[libraries]
+# linux.debug.x86_64      = "bin/bege.linux.x86_64.debug.so"
+# linux.release.x86_64    = "bin/bege.linux.x86_64.release.so"
+windows.debug.x86_64    = "bin/bege.windows.x86_64.debug.dll"
+windows.release.x86_64  = "bin/bege.windows.x86_64.release.dll"
+# macos.debug             = "bin/TBD.debug.dylib" # or *.framework
+# macos.release           = "bin/TBD.release.dylib" # or *.framework
+# android.debug.arm64     = "bin/TBD.debug.so"
+# android.release.arm64   = "bin/TBD.release.so"
+# android.debug.x86_64    = "bin/TBD.debug.so"
+# android.release.x86_64  = "bin/TBD.release.so"
+# ios.debug.arm64         = "bin/TBD.debug.dylib"
+# ios.release.arm64       = "bin/TBD.release.dylib"
+# ios.debug.x86_64        = "bin/TBD.debug.dylib"
+# ios.release.x86_64      = "bin/TBD.release.dylib"
+# html.debug              = "bin/TBD.debug.wasm"
+# html.release            = "bin/TBD.release.wasm"
+
+# [dependencies]
+# linux.debug.x86_64     = { "bin/TBA.linux.debug.so": "" }
+# linux.release.x86_64   = { "bin/TBA.linux.release.so": "" }
+# windows.debug.x86_64   = { "bin/TBA.windows.debug.dll": "" }
+# windows.release.x86_64 = { "bin/TBA.windows.release.dll": "" }
+# macos.debug            = { "bin/TBA.osx.debug.dylib": "" }
+# macos.release          = { "bin/TBA.osx.release.dylib": "" }
