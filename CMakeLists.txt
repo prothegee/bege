@@ -1,51 +1,60 @@
 cmake_minimum_required(VERSION 3.15)
 
-# version
+# package
 set(BEGE_VERSION_MAJOR 0)
 set(BEGE_VERSION_MINOR 1)
-set(BEGE_VERSION_PATCH 1)
-set(BEGE_VERSION_RELEASE_DATE 20250507)
+set(BEGE_VERSION_PATCH 0)
+set(BEGE_VERSION_RELEASE_DATE 20250509)
 
-set(BEGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-# project
+# package project
 project(bege
     VERSION "${BEGE_VERSION_MAJOR}.${BEGE_VERSION_MINOR}.${BEGE_VERSION_PATCH}"
     DESCRIPTION "module library treatment for backend godot project"
     HOMEPAGE_URL "https://github.com/prothegee/bege"
-    LANGUAGES CXX
+    LANGUAGES CXX C
 )
 
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BEGE_SOURCE_DIR}/addons/bege/bin") # skipped for now
+set(BEGE_PROJECT "bege")
 
-# bege variables
-## bege is debug
-if(NOT DEFINED BEGE_IS_DEBUG)
+# option/s
+option(BEGE_BUILD_TESTS         "build project test/s" OFF)
+option(BEGE_BUILD_TOOLS         "build project tool/s" OFF)
+option(BEGE_BUILD_EXAMPLES      "build project example/s" OFF)
+option(BEGE_BUILD_SYSTEM_TARGET "build system target; 1:linux 2:windows 3:macos/osx 4:android 5:ios" OFF)
+
+## rules of options
+
+## build tests as bool
+if(BEGE_BUILD_TESTS)
+    set(BEGE_BUILD_TESTS true)
+else()
+    set(BEGE_BUILD_TESTS false)
+endif()
+
+## build tools as bool
+if(BEGE_BUILD_TOOLS)
+    set(BEGE_BUILD_TOOLS true)
+else()
+    set(BEGE_BUILD_TOOLS false)
+endif()
+
+## build type
+if(NOT CMAKE_BEGE_BUILD_TYPE)
+    set(CMAKE_BEGE_BUILD_TYPE "Debug")
+endif()
+
+## rest of the world is debug except Release & MinSizeRel
+set(BEGE_IS_DEBUG true)
+set(BEGE_BUILD_TYPE)
+if(CMAKE_BEGE_BUILD_TYPE STREQUAL "Release")
+    set(BEGE_IS_DEBUG false) 
+    set(BEGE_BUILD_TYPE "release")
+elseif(CMAKE_BEGE_BUILD_TYPE STREQUAL "MinSizeRel")
+    set(BEGE_IS_DEBUG false) 
+    set(BEGE_BUILD_TYPE "release")
+else()
     set(BEGE_IS_DEBUG true)
-endif()
-## bege build processor
-if(NOT DEFINED BEGE_PROCESSOR_SYSTEM)
-    set(BEGE_PROCESSOR_SYSTEM)
-    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" BEGE_PROCESSOR_SYSTEM)
-endif()
-##
-if(NOT DEFINED BEGE_PROCESSOR_OUTPUT)
-    set(BEGE_PROCESSOR_OUTPUT)
-endif()
-## bege build target info
-if(NOT DEFINED BEGE_BUILD_TARGET_INFO)
-    set(BEGE_BUILD_TARGET_INFO)
-
-    if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-        set(BEGE_IS_DEBUG false)
-        set(BEGE_BUILD_TARGET_INFO "release")
-    else()
-        set(BEGE_BUILD_TARGET_INFO "debug")
-    endif()
-endif()
-## bege build system info
-if(NOT DEFINED BEGE_BUILD_SYSTEM_INFO)
-    set(BEGE_BUILD_SYSTEM_INFO)
+    set(BEGE_BUILD_TYPE "debug")
 endif()
 ## bege godot-cpp dir
 if(NOT DEFINED BEGE_GODOT_CPP_DIR)
@@ -55,61 +64,28 @@ endif()
 if(NOT DEFINED BEGE_VCPKG_TRIPLET)
     set(BEGE_VCPKG_TRIPLET)
 endif()
-## bege vcpkg installed dir
-if(NOT DEFINED BEGE_VCPKG_DIR)
-    set(BEGE_VCPKG_DIR)
+## system name
+if(NOT DEFINED BEGE_SYSTEM_NAME)
+    set(BEGE_SYSTEM_NAME "")
 endif()
-## bege python3
-if(NOT DEFINED BEGE_PYTHON3_EXEC)
-    set(BEGE_PYTHON3_EXEC)
+string(TOLOWER "${CMAKE_SYSTEM_NAME}" BEGE_SYSTEM_NAME)
+### rules of os
+if(${BEGE_SYSTEM_NAME} STREQUAL "macos")
+    set(BEGE_SYSTEM_NAME "osx")
+elseif(${BEGE_SYSTEM_NAME} STREQUAL "darwin")
+    set(BEGE_SYSTEM_NAME "osx")
+else()
+    # force otherwise
+    string(TOLOWER "${CMAKE_SYSTEM_NAME}" BEGE_SYSTEM_NAME)
 endif()
 
-# check requirements
-## godot-cpp
-set(BEGE_GODOT_CPP_FOUND false)
-if(NOT "$ENV{GODOT_CPP_DIR}" STREQUAL "")
-    set(BEGE_GODOT_CPP_DIR "$ENV{GODOT_CPP_DIR}")
-    set(BEGE_GODOT_CPP_FOUND true)
-else()
-    message(FATAL_ERROR "-- becc: environemnt VPCKG_DIR is required")
+## system process
+if(NOT DEFINED BEGE_PROCESSOR_SYSTEM)
+    set(BEGE_PROCESSOR_SYSTEM "")
 endif()
-## vcpkg
-set(BEGE_VCPKG_FOUND false)
-if(NOT "$ENV{VCPKG_DIR}" STREQUAL "")
-    set(BEGE_VCPKG_DIR "$ENV{VCPKG_DIR}")
-    set(BEGE_VCPKG_FOUND true)
-else()
-    message(FATAL_ERROR "-- becc: environemnt VPCKG_DIR is required")
-endif()
+string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" BEGE_PROCESSOR_SYSTEM)
 
-# options
-set(BEGE_BUILD_TESTS       "build project test/s (not godot examples tests)" OFF)
-set(BEGE_BUILD_TOOLS       "build project tool/s" OFF)
-set(BEGE_BUILD_EXAMPLES    "build project example/s" OFF)
-
-# rules of options
-## build tests
-if(BEGE_BUILD_TESTS)
-    set(BEGE_BUILD_TESTS true)
-else()
-    set(BEGE_BUILD_TESTS false)
-endif()
-## build tools
-if(BEGE_BUILD_TOOLS)
-    set(BEGE_BUILD_TOOLS true)
-else()
-    set(BEGE_BUILD_TOOLS false)
-endif()
-## build examples
-if(BEGE_BUILD_EXAMPLES)
-    set(BEGE_BUILD_EXAMPLES true)
-else()
-    set(BEGE_BUILD_EXAMPLES false)
-endif()
-
-# reserved: TODO - pre configur, if any
-
-# include cmake
+# include base
 include(CheckIncludeFileCXX)
 include(GenerateExportHeader)
 include(CMakeDependentOption)
@@ -117,44 +93,42 @@ include(CMakeFindDependencyMacro)
 include(CMakePackageConfigHelpers)
 include(FindPackageHandleStandardArgs)
 
-# sources files
-if(NOT DEFINED BEGE_HEADERS_FILES)
-    set(BEGE_HEADERS_FILES)
+# files
+## headers files
+if(NOT DEFINED BEC_HEADERS_FILES)
+    set(BEC_HEADERS_FILES)
 endif()
 
-# sources files
+## sources files
 if(NOT DEFINED BEGE_SOURCES_FILES)
     set(BEGE_SOURCES_FILES)
 endif()
-## sources files: append
+
 list(APPEND
     BEGE_SOURCES_FILES
-        # core
         sources/src/bege.cc
         # functions
         # nodes
         # objects
-        # platforms: android
-        # platforms: ios
-        # platforms: linux
-        # platforms: macos
-        # platforms: windows
+        # platforms:linux
+        # platforms:windows
+        # platforms:osx
+        # platforms:android
+        # platforms:ios
 )
 
-# reserved: a
 
-# main cmake toolchain file
+# packages, lib related
+## 
+## base toolchain
 if(NOT "${CMAKE_TOOLCHAIN_FILE}" STREQUAL "")
     message(NOTICE "-- bege: default toolchain from -DCMAKE_TOOLCHAIN_FILE is \"${CMAKE_TOOLCHAIN_FILE}\"")
     include("${CMAKE_TOOLCHAIN_FILE}")
 else()
     message(NOTICE "-- bege: default toolchain from -DCMAKE_TOOLCHAIN_FILE is empty")
 endif()
-
-# subdir: core
-## godot-cpp
-add_subdirectory("${BEGE_GODOT_CPP_DIR}" BEGE_GODOT_CPP)
-## triplet and processor
+##
+## triplet & processor
 if(ANDROID)
     if(ANDROID_ABI STREQUAL "")
         message(FATAL_ERROR "-- bege: ANDROID_ABI is empty, please provide 1; armeabi-v7a for arm32, arm64-v8a for arm64, x86_64 for x86_64 emulator?")
@@ -162,8 +136,7 @@ if(ANDROID)
     if(NOT ANDROID_PLATFORM)
         message(WARNING "-- bege: ANDROID_PLATFORM is not set, using default min api, see https://en.wikipedia.org/wiki/Android_version_history#Overview")
     endif()
-    
-    
+
     message(NOTICE "-- becc: ANDROID_ABI: ${ANDROID_ABI}")
     message(NOTICE "-- becc: ANDROID_PLATFORM: ${ANDROID_PLATFORM}")
 
@@ -180,60 +153,95 @@ if(ANDROID)
         message(FATAL_ERROR "-- bege: unsupported android ABI: ${ANDROID_ABI}")
     endif()
 
-    set(BEGE_BUILD_SYSTEM_INFO "android")
+    set(BEGE_BUILD_SYSTEM_TARGET 4)
+    set(BEGE_BUILD_SYSTEM_TARGET_NAME "android")
 
     message(STATUS "TODO: include dir from java")
     message(STATUS "TODO: include dir from android")
 elseif(WIN32)
     # windows architectures
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    if(BEGE_PROCESSOR_SYSTEM STREQUAL "x86_64")
         set(BEGE_VCPKG_TRIPLET "x64-windows")
         set(BEGE_PROCESSOR_OUTPUT "x86_64")
-    # elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86") # not gonna support it
+    # elseif(BEGE_PROCESSOR_SYSTEM STREQUAL "x86") # not gonna support it
     #     set(BEGE_VCPKG_TRIPLET "x86-windows")
     #     set(BEGE_PROCESSOR_OUTPUT "x86_32")
-    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
+    elseif(BEGE_PROCESSOR_SYSTEM STREQUAL "amd64")
         set(BEGE_VCPKG_TRIPLET "x64-windows")
         set(BEGE_PROCESSOR_OUTPUT "x86_64")
     else()
-        message(FATAL_ERROR "-- bege: unsupported windows architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+        message(FATAL_ERROR "-- bege: unsupported windows architecture: ${BEGE_PROCESSOR_SYSTEM}")
     endif()
 
-    set(BEGE_BUILD_SYSTEM_INFO "windows")
+    set(BEGE_BUILD_SYSTEM_TARGET 2)
+    set(BEGE_BUILD_SYSTEM_TARGET_NAME "windows")
 elseif(APPLE)
     # macOS/iOS architectures
     if(IOS)
         set(BEGE_VCPKG_TRIPLET "arm64-ios")
-        set(BEGE_BUILD_SYSTEM_INFO "ios")
         set(BEGE_PROCESSOR_OUTPUT "arm64")
+        set(BEGE_BUILD_SYSTEM_TARGET 5)
+        set(BEGE_BUILD_SYSTEM_TARGET_NAME "ios")
     else()
-        if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+        if(BEGE_PROCESSOR_SYSTEM STREQUAL "arm64")
             set(BEGE_VCPKG_TRIPLET "arm64-osx")
             set(BEGE_PROCESSOR_OUTPUT "arm64")
         else()
             set(BEGE_VCPKG_TRIPLET "x64-osx")
-            set(BEGE_PROCESSOR_OUTPUT "x64")
+            set(BEGE_PROCESSOR_OUTPUT "x86_64")
         endif()
 
-        set(BEGE_BUILD_SYSTEM_INFO "osx")
+        set(BEGE_BUILD_SYSTEM_TARGET 3)
+        set(BEGE_BUILD_SYSTEM_TARGET_NAME "osx")
     endif()
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # assume x64 for Linux
     set(BEGE_VCPKG_TRIPLET "x64-linux")
-    set(BEGE_BUILD_SYSTEM_INFO "linux")
-    set(BEGE_PROCESSOR_OUTPUT "x64")
+    set(BEGE_PROCESSOR_OUTPUT "x86_64")
+    
+    set(BEGE_BUILD_SYSTEM_TARGET 1)
+    set(BEGE_BUILD_SYSTEM_TARGET_NAME "linux")
 else()
     message(FATAL_ERROR "-- bege: unsupported platform: ${CMAKE_SYSTEM_NAME}")
+    set(BEGE_BUILD_SYSTEM_TARGET 0)
 endif()
+##
+## godot-cpp
+set(BEGE_GODOT_CPP_FOUND false)
+if(NOT "$ENV{GODOT_CPP_DIR}" STREQUAL "")
+    set(BEGE_GODOT_CPP_DIR "$ENV{GODOT_CPP_DIR}")
+    set(BEGE_GODOT_CPP_FOUND true)
+else()
+    if("${GODOT_CPP_DIR}" STREQUAL "")
+        message(FATAL_ERROR "-- becc: environemnt GODOT_CPP_DIR is empty & config -DGODOT_CPP_DIR is also empty")
+    else()
+        set(BEGE_GODOT_CPP_DIR "${GODOT_CPP_DIR}")
+        set(BEGE_GODOT_CPP_FOUND true)
+    endif()
+endif()
+add_subdirectory("${BEGE_GODOT_CPP_DIR}" BEGE_GODOT_CPP)
+##
+## package manager: vcpkg
+set(BEGE_VCPKG_FOUND false)
+if(NOT "$ENV{VCPKG_DIR}" STREQUAL "")
+    set(BEGE_VCPKG_DIR "$ENV{VCPKG_DIR}")
+    set(BEGE_VCPKG_FOUND true)
+else()
+    # 2nd attempt but using -DVCPKG_DIR
+    if("${VCPKG_DIR}" STREQUAL "")
+        message(AUTHOR_WARNING "-- becc: environemnt VPCKG_DIR is empty & config -DVCPKG_DIR is also empty")
+    else()
+        set(BEGE_VCPKG_DIR "${VCPKG_DIR}")
+        set(BEGE_VCPKG_FOUND true)
+    endif()
+endif()
+if(BEGE_VCPKG_FOUND)
+    ### vcpkg: default triplet
+    set(VCPKG_TARGET_TRIPLET "${BEGE_VCPKG_TRIPLET}")
 
-## vcpkg
-### vcpkg: default triplet
-set(VCPKG_TARGET_TRIPLET "${BEGE_VCPKG_TRIPLET}")
-### vcpkg: toolchain
-include("${BEGE_VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake")
-### vcpkg: installed directory
+    include("${BEGE_VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake")
+endif()
 set(BEGE_VCPKG_DIR_INSTALLED "${BEGE_VCPKG_DIR}/installed/${BEGE_VCPKG_TRIPLET}")
-### vcpkg: configure
 if(EXISTS "${BEGE_VCPKG_DIR_INSTALLED}")
     # link bin dirs
     include_directories(    "${BEGE_VCPKG_DIR_INSTALLED}/bin")
@@ -257,11 +265,14 @@ if(EXISTS "${BEGE_VCPKG_DIR_INSTALLED}")
     include_directories(    "${BEGE_VCPKG_DIR_INSTALLED}/share")
     link_directories(BEFORE "${BEGE_VCPKG_DIR_INSTALLED}/share")
 else()
-    message(FATAL_ERROR "-- ${PROJECT_NAME}: vpckg error")
+    message(AUTHOR_WARNING "-- ${PROJECT_NAME}: vpckg environment variable not found")
 endif()
-
-# package
-## find: python3, required to build object docs
+##
+## python3
+## bege python3
+if(NOT DEFINED BEGE_PYTHON3_EXEC)
+    set(BEGE_PYTHON3_EXEC)
+endif()
 if(NOT DEFINED Python3_EXECUTABLE)
     set(Python3_EXECUTABLE)
 endif()
@@ -277,53 +288,78 @@ else()
         set(BEGE_PYTHON3_EXEC "${Python3_EXECUTABLE}")
     endif()
 endif()
-
-# project lib
-## project core lib
-add_library(${PROJECT_NAME} SHARED ${BEGE_SOURCES_FILES})
-## project core lib output
-set(BEGE_SHARED_OUTPUT_NAME "bege.${BEGE_BUILD_SYSTEM_INFO}.${BEGE_PROCESSOR_OUTPUT}.${BEGE_BUILD_TARGET_INFO}")
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 17
-    CXX_EXTENSIONS OFF
-
-    POSITION_INDEPENDENT_CODE ON
-    BUILD_RPATH_USE_ORIGIN ON
-
-    LINK_SEARCH_START_STATIC ON
-    LINK_SEARCH_END_STATIC ON
-
-    LIBRARY_OUTPUT_DIRECTORY "$<1:${CMAKE_BINARY_DIR}>"
-    RUNTIME_OUTPUT_DIRECTORY "$<1:${CMAKE_BINARY_DIR}>"
-    PDB_OUTPUT_DIRECTORY     "$<1:${CMAKE_BINARY_DIR}>"
-
-    OUTPUT_NAME "${BEGE_SHARED_OUTPUT_NAME}"
-)
-### any specific?
-
-# link libraries
-## godot-cpp
-target_link_libraries(${PROJECT_NAME} PRIVATE godot-cpp)
+##
 ## openssl
 find_package(OpenSSL REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-## sdl3
-## sdl3-image
-## zxing-cpp
+if(OpenSSL_FOUND)
+    message(NOTICE "-- ${PROJECT_NAME}: openssl package found")
+else()
+    message(FATAL_ERROR "-- ${PROJECT_NAME}: openssl package not found")
+endif()
 
-# target include dirs
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/sources/inc
-)
+# include(CheckIncludeFileCXX)
+# include(CMakeDependentOption)
+# include(GenerateExportHeader)
+# include(FindPackageHandleStandardArgs)
 
-# target source
-target_sources(${PROJECT_NAME}
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/sources/src
-)
+# reserved: pre build
+message(STATUS "-- bege: TODO - pre build")
 
+# project lib
+## object core lib
+add_library(${PROJECT_NAME} OBJECT ${BEGE_SOURCES_FILES})
+## static core lib
+add_library(bege_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+## shared code lib
+add_library(bege_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+### lib/s name
+#### lib output
+set(BEGE_OUTPUT_NAME "bege")
+#### lib output suffix
+set(BEGE_OUTPUT_SUFFIX_NAME "${BEGE_BUILD_SYSTEM_TARGET}.${BEGE_PROCESSOR_OUTPUT}.${BEGE_BUILD_TYPE}")
+#### libs windows and else
+if(WIN32)
+    set_target_properties(bege_static PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+        OUTPUT_NAME "${BEGE_OUTPUT_NAME}"
+    )
+    set_target_properties(bege_shared PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        OUTPUT_NAME "${BEGE_OUTPUT_NAME}"
+    )
+else()
+    set_target_properties(bege_static PROPERTIES
+        OUTPUT_NAME "${BEGE_OUTPUT_NAME}"
+    )
+    set_target_properties(bege_shared PROPERTIES
+        OUTPUT_NAME "${BEGE_OUTPUT_NAME}"
+    )
+endif()
+
+# post build prep
+if(NOT DEFINED BEGE_BUILD_FILES)
+    set(BEGE_BUILD_FILES)
+endif()
+if(NOT DEFINED BEGE_BUILD_FILES_DIR)
+    set(BEGE_BUILD_FILES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/addons/bege/bin/${BEGE_BUILD_SYSTEM_TARGET_NAME}/${BEGE_BUILD_TYPE}/${BEGE_PROCESSOR_OUTPUT}")
+
+    if(NOT EXISTS "${BEGE_BUILD_FILES_DIR}")
+        file(MAKE_DIRECTORY "${BEGE_BUILD_FILES_DIR}")
+    endif()
+endif()
+if(WIN32)
+    file(GLOB BEGE_BUILD_FILES "${CMAKE_BINARY_DIR}/bege.*")
+else()
+    file(GLOB BEGE_BUILD_FILES "${CMAKE_BINARY_DIR}/libbege.*")
+endif()
+
+# compiler options
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(BEGE_COMPILER_ID    1)
+    set(BEGE_COMPILER_GNU   true)
+    set(BEGE_COMPILER_MSVC  false)
+    set(BEGE_COMPILER_CLANG false)
+
     target_compile_options(${PROJECT_NAME} PRIVATE
         -Wall
         -Wextra
@@ -344,11 +380,21 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         -fPIC
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(BEGE_COMPILER_ID    2)
+    set(BEGE_COMPILER_GNU   false)
+    set(BEGE_COMPILER_MSVC  true)
+    set(BEGE_COMPILER_CLANG false)
+
     target_compile_options(${PROJECT_NAME} PRIVATE
         /W4
         /wd4996
     )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
+    set(BEGE_COMPILER_ID    3)
+    set(BEGE_COMPILER_GNU   false)
+    set(BEGE_COMPILER_MSVC  false)
+    set(BEGE_COMPILER_CLANG true)
+
     target_compile_options(${PROJECT_NAME} PRIVATE
         -Wall
         -Wextra
@@ -373,32 +419,142 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
         -fPIC
     )
 else()
+    set(BEGE_COMPILER_ID    0)
+    set(BEGE_COMPILER_GNU   false)
+    set(BEGE_COMPILER_MSVC  false)
+    set(BEGE_COMPILER_CLANG false)
+
     message(NOTICE "-- ${PROJECT_NAME}: -DCMAKE_CXX_COMPILER_ID is not supported as ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
-# # TMP: do not remove, generate docs class
-# ## kinda bothering for now & too lazy @prothegee
-# if(BEGE_IS_DEBUG AND BEGE_PYTHON3_EXEC)
-#     message(NOTICE "-- bege: creating documentation for debug")
+if(BEGE_COMPILER_GNU) # gcc 12.2
+    target_link_libraries(${PROJECT_NAME} PRIVATE -lm)
 
-#     set(BEGE_DOC_DATA_GEN_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/sources/src/documentations.gen.cc")
+    if(EXISTS "/usr/lib/x86_64-linux-gnu/libm.so")
+        target_link_libraries(${PROJECT_NAME} PRIVATE "/usr/lib/x86_64-linux-gnu/libm.so") # somehow build not error
+    else()
+        message(WARNING "-- ${PROJECT_NAME}: for gcc has error, be warn")
+    endif()
+endif()
 
-#     # force remove before generating again
-#     file(REMOVE "${BEGE_DOC_DATA_GEN_SOURCE}")
+## warning?
 
-#     file(GLOB_RECURSE BEGE_DOC_XML
-#         LIST_DIRECTORIES NO
-#         CONFIGURE_DEPENDS
-#         "${CMAKE_CURRENT_SOURCE_DIR}/sources/xml/*.xml"
-#     )
+# bege config
+## n/a
 
-#     generate_doc_source("${BEGE_DOC_DATA_GEN_SOURCE}" "${BEGE_DOC_XML}")
+# bege export
+## n/a
 
-#     target_sources(${PROJECT_NAME} PRIVATE "${BEGE_DOC_DATA_GEN_SOURCE}")
-# endif()
+# bege shared definitions
+target_compile_definitions(bege_shared PRIVATE BEGE_SHARED)
 
-# reserved: config
+# target include dirs
+## core include: src/inc
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/sources/inc
+)
 
-# reserved: export
+# target source
+## dont expand this yet
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/src
+)
 
-# reserved: TODO - post build, if any
+# dependencies for static & shared
+## loop dependencies target
+foreach(BEGE_TARGET ${PROJECT_NAME} bege_static bege_shared)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(${BEGE_TARGET} PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+            -Wno-unused-value
+            -Wno-unused-variable
+            -Wno-reorder
+            -Wno-parentheses
+            -Wno-switch
+            -Wno-format
+            -Wno-invalid-offsetof
+            -Wno-multichar
+            -Wno-char-subscripts
+            -Wno-empty-body
+            -Wno-unused-function
+            -Wno-deprecated-declarations
+            -lm
+            -fPIC
+        )
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(${BEGE_TARGET} PRIVATE
+            /W4
+            /wd4996
+        )
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
+        target_compile_options(${BEGE_TARGET} PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+            -Wno-unused-value
+            -Wno-unused-variable
+            -Wno-reorder
+            -Wno-parentheses
+            -Wno-switch
+            -Wno-format
+            -Wno-dynamic-class-memaccess
+            -Wno-unused-private-field
+            -Wno-invalid-offsetof
+            -Wno-multichar
+            -Wno-char-subscripts
+            -Wno-null-conversion
+            -Wno-empty-body
+            -Wno-unused-lambda-capture
+            -Wno-unused-function
+            -Wno-tautological-constant-out-of-range-compare
+            -Wno-deprecated-declarations
+            -fPIC
+        )
+    else()
+        message(NOTICE "-- ${PROJECT_NAME}: -DCMAKE_CXX_COMPILER_ID is not supported as ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+
+    ##
+    ## godot-cpp
+    target_link_libraries(${BEGE_TARGET} PRIVATE godot-cpp)
+    ##
+    ## openssl
+    target_link_libraries(${BEGE_TARGET} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+
+    ## post build copy lib
+    if(NOT "${BEGE_TARGET}" STREQUAL ${PROJECT_NAME})
+        foreach(FILE ${BEGE_BUILD_FILES})
+            add_custom_command(
+                TARGET ${BEGE_TARGET} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                    ${FILE}
+                    ${BEGE_BUILD_FILES_DIR}
+                    COMMENT "copying ${file} to addons of bege"
+                COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    ${PROJECT_SOURCE_DIR}/addons
+                    ${PROJECT_SOURCE_DIR}/examples/addons
+                    COMMENT "copying addons to examples"
+            )
+        endforeach()
+    endif()
+endforeach()
+
+# version shared lib
+set_target_properties(bege_shared PROPERTIES
+    VERSION "${BEGE_VERSION_MAJOR}.${BEGE_VERSION_MINOR}.${BEGE_VERSION_PATCH}"
+    SOVERSION "${BEGE_VERSION_MAJOR}.${BEGE_VERSION_MINOR}.${BEGE_VERSION_PATCH}"
+)
+
+# build tests
+if(BEGE_BUILD_TESTS)
+    # n/a
+endif(BEGE_BUILD_TESTS)
+
+# build tools
+if(BEGE_BUILD_TOOLS)
+    # n/a
+endif(BEGE_BUILD_TOOLS)

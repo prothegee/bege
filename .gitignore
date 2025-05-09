@@ -91,5 +91,9 @@ project-build-release*.*
 ## exception [Internal Usage]
 ##
 /CMakePresets.json
+
+self*
+
 !addons/bege/bin
 !addons/bege/bin/*
+!addons/bege/bin/**/*
