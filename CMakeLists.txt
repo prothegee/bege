@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 # package
 set(BEGE_VERSION_MAJOR 0)
-set(BEGE_VERSION_MINOR 1)
+set(BEGE_VERSION_MINOR 2)
 set(BEGE_VERSION_PATCH 0)
 set(BEGE_VERSION_RELEASE_DATE 20250509)
 
@@ -34,6 +34,13 @@ if(BEGE_BUILD_TOOLS)
     set(BEGE_BUILD_TOOLS true)
 else()
     set(BEGE_BUILD_TOOLS false)
+endif()
+
+## build example as is
+if(BEGE_BUILD_EXAMPLES)
+    set(BEGE_BUILD_EXAMPLES true)
+else()
+    set(BEGE_BUILD_EXAMPLES false)
 endif()
 
 ## build type
@@ -158,8 +165,8 @@ include(FindPackageHandleStandardArgs)
 
 # files
 ## headers files
-if(NOT DEFINED BEC_HEADERS_FILES)
-    set(BEC_HEADERS_FILES)
+if(NOT DEFINED BEGE_HEADERS_FILES)
+    set(BEGE_HEADERS_FILES)
 endif()
 
 ## sources files
@@ -171,6 +178,7 @@ list(APPEND
     BEGE_SOURCES_FILES
         sources/src/bege.cc
         # functions
+        sources/src/functions/date_and_time.cc
         # nodes
         # objects
         # platforms:linux
@@ -199,8 +207,8 @@ if(ANDROID)
         message(WARNING "-- bege: ANDROID_PLATFORM is not set, using default min api, see https://en.wikipedia.org/wiki/Android_version_history#Overview")
     endif()
 
-    message(NOTICE "-- becc: ANDROID_ABI: ${ANDROID_ABI}")
-    message(NOTICE "-- becc: ANDROID_PLATFORM: ${ANDROID_PLATFORM}")
+    message(NOTICE "-- bege: ANDROID_ABI: ${ANDROID_ABI}")
+    message(NOTICE "-- bege: ANDROID_PLATFORM: ${ANDROID_PLATFORM}")
 
     if(ANDROID_ABI STREQUAL "armeabi-v7a")
         set(BEGE_VCPKG_TRIPLET "arm-neon-android")  # explicitly use NEON-enabled ARM triplet
@@ -274,8 +282,9 @@ if(NOT "$ENV{GODOT_CPP_DIR}" STREQUAL "")
     set(BEGE_GODOT_CPP_DIR "$ENV{GODOT_CPP_DIR}")
     set(BEGE_GODOT_CPP_FOUND true)
 else()
+    # 2nd attempt but using -DGODOT_CPP_DIR
     if("${GODOT_CPP_DIR}" STREQUAL "")
-        message(FATAL_ERROR "-- becc: environemnt GODOT_CPP_DIR is empty & config -DGODOT_CPP_DIR is also empty")
+        message(FATAL_ERROR "-- bege: environemnt GODOT_CPP_DIR is empty & config -DGODOT_CPP_DIR is also empty")
     else()
         set(BEGE_GODOT_CPP_DIR "${GODOT_CPP_DIR}")
         set(BEGE_GODOT_CPP_FOUND true)
@@ -291,7 +300,7 @@ if(NOT "$ENV{VCPKG_DIR}" STREQUAL "")
 else()
     # 2nd attempt but using -DVCPKG_DIR
     if("${VCPKG_DIR}" STREQUAL "")
-        message(AUTHOR_WARNING "-- becc: environemnt VPCKG_DIR is empty & config -DVCPKG_DIR is also empty")
+        message(AUTHOR_WARNING "-- bege: environemnt VPCKG_DIR is empty & config -DVCPKG_DIR is also empty")
     else()
         set(BEGE_VCPKG_DIR "${VCPKG_DIR}")
         set(BEGE_VCPKG_FOUND true)
@@ -408,6 +417,13 @@ if(NOT DEFINED BEGE_BUILD_FILES_DIR)
         file(MAKE_DIRECTORY "${BEGE_BUILD_FILES_DIR}")
     endif()
 endif()
+if(NOT DEFINED BEGE_BUILD_FILES_DIR_EXAMPLES)
+    set(BEGE_BUILD_FILES_DIR_EXAMPLES "${CMAKE_CURRENT_SOURCE_DIR}/examples/addons/bege/bin/${BEGE_BUILD_SYSTEM_TARGET_NAME}/${BEGE_BUILD_TYPE}/${BEGE_PROCESSOR_OUTPUT}")
+
+    if(NOT EXISTS "${BEGE_BUILD_FILES_DIR_EXAMPLES}")
+        file(MAKE_DIRECTORY "${BEGE_BUILD_FILES_DIR_EXAMPLES}")
+    endif()
+endif()
 if(WIN32)
     file(GLOB BEGE_BUILD_FILES "${CMAKE_BINARY_DIR}/bege.*")
 else()
@@ -504,7 +520,18 @@ endif()
 ## n/a
 
 # bege export
-## n/a
+generate_export_header(bege
+    EXPORT_FILE_NAME
+        ${PROJECT_SOURCE_DIR}/sources/inc/bege/export.hh
+)
+generate_export_header(bege_static
+    EXPORT_FILE_NAME
+        ${PROJECT_SOURCE_DIR}/sources/inc/bege/export_static.hh
+)
+generate_export_header(bege_shared
+    EXPORT_FILE_NAME
+        ${PROJECT_SOURCE_DIR}/sources/inc/bege/export_shared.hh
+)
 
 # bege shared definitions
 target_compile_definitions(bege_shared PRIVATE BEGE_SHARED)
@@ -587,26 +614,8 @@ foreach(BEGE_TARGET ${PROJECT_NAME} bege_static bege_shared)
     ## openssl
     target_link_libraries(${BEGE_TARGET} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
-    ## post build copy lib
-    if(NOT "${BEGE_TARGET}" STREQUAL ${PROJECT_NAME})
-        foreach(FILE ${BEGE_BUILD_FILES})
-            add_custom_command(
-                TARGET ${BEGE_TARGET} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    ${FILE}
-                    ${BEGE_BUILD_FILES_DIR}
-                    COMMENT "copying ${file} to addons of bege"
-            )
-        endforeach()
-        # Use a custom script or alternative method for directory copy if needed
-        add_custom_command(
-            TARGET ${BEGE_TARGET} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${PROJECT_SOURCE_DIR}/addons
-                ${PROJECT_SOURCE_DIR}/examples/addons
-                COMMENT "copying addons to examples"
-        )
-    endif()
+    ##
+    ## reserved
 endforeach()
 
 # version shared lib
@@ -631,4 +640,50 @@ if(CMAKE_CXX_FLAGS STREQUAL "")
     message(WARNING "-- bege: cxx flags is empty for some reason")
 else()
     message(NOTICE "-- bege: build info\n   -DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS}\"")
+endif()
+
+# final post build
+if(WIN32)
+    # separate the copying into a custom target that depends on both libraries
+    add_custom_target(copy_artifacts ALL
+        DEPENDS bege_static bege_shared
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${BEGE_BUILD_FILES_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<TARGET_FILE:bege_shared>"
+            "$<TARGET_PDB_FILE:bege_shared>"
+            "$<TARGET_LINKER_FILE:bege_static>"
+            "${BEGE_BUILD_FILES_DIR}"
+        COMMENT "copying Windows build artifacts"
+    )
+
+    if(BEGE_BUILD_EXAMPLES)
+        add_custom_command(TARGET copy_artifacts
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${BEGE_BUILD_FILES_DIR_EXAMPLES}"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "$<TARGET_FILE:bege_shared>"
+                "$<TARGET_PDB_FILE:bege_shared>"
+                "$<TARGET_LINKER_FILE:bege_static>"
+                "${BEGE_BUILD_FILES_DIR_EXAMPLES}"
+            COMMENT "copying to examples directory"
+        )
+    endif()
+else()
+    # non windows systems can use the original approach
+    foreach(BEGE_TARGET bege_static bege_shared)
+        add_custom_command(TARGET ${BEGE_TARGET} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "$<TARGET_FILE:${BEGE_TARGET}>"
+                "${BEGE_BUILD_FILES_DIR}"
+            COMMENT "copying $<TARGET_FILE_NAME:${BEGE_TARGET}>"
+        )
+
+        if(BEGE_BUILD_EXAMPLES)
+            add_custom_command(TARGET ${BEGE_TARGET} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "$<TARGET_FILE:${BEGE_TARGET}>"
+                    "${BEGE_BUILD_FILES_DIR_EXAMPLES}"
+                COMMENT "copying to examples directory"
+            )
+        endif()
+    endforeach()
 endif()

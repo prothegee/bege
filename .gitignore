@@ -91,6 +91,8 @@ project-build-release*.*
 ## exception [Internal Usage]
 ##
 /CMakePresets.json
+/sources/inc/bege/export_shared.hh
+/sources/inc/bege/export_static.hh
 
 self*
 
