@@ -1,0 +1,17 @@
+{
+    "configurations":
+    [
+        {
+            "name": "EDITOR: bege example",
+            "type": "cppdbg", // windows=cppvsdbg else=cppdbg
+            "request": "launch",
+            "cwd": "${fileDirname}",
+            "program": "/path/to/godot_exec",
+            "stopAtEntry": false,
+            "args": [
+                "-e", "--path", "${workspaceFolder}/examples"
+            ],
+            "environment": []
+        }
+    ]
+}

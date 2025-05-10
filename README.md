@@ -22,13 +22,13 @@ module library treatment for backend godot project
 
 ## important
 
-this backend treatment is automatically using vcpkg,
+this backend treatment is automatically using environment variables,
 
-you need set your environment variable of:
-1. `VCPKG_DIR` to your install vcpkg directory, otherwise it error
+you need set your environment variables of or pass cmake config var:
+1. `VCPKG_DIR` to your install vcpkg directory
 2. `GODOT_CPP_DIR` to your godot-cpp directory, otherwise it error
 
-### dependencies to install in vcpkg
+### dependencies to install
 
 - [openssl](https://github.com/openssl/openssl)
 
