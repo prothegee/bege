@@ -14,8 +14,6 @@ project(bege
     LANGUAGES CXX C
 )
 
-set(BEGE_PROJECT "bege")
-
 # option/s
 option(BEGE_BUILD_TESTS         "build project test/s" OFF)
 option(BEGE_BUILD_TOOLS         "build project tool/s" OFF)
@@ -41,6 +39,71 @@ endif()
 ## build type
 if(NOT CMAKE_BEGE_BUILD_TYPE)
     set(CMAKE_BEGE_BUILD_TYPE "Debug")
+endif()
+
+## cxx standard required
+if(NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+## cxx extensions
+if(NOT DEFINED CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+
+## cxx standard
+### by default build is set for gnu linux environment
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    # automatic standard detection from compiler flags
+    set(_detected_standard 17)
+    # check for Unix-style flags (-std=c++XX or -std=gnu++XX)
+    string(REGEX MATCH "-std=([c|gnu]\\+\\+)([0-9]+)" _ "${CMAKE_CXX_FLAGS}")
+    if(CMAKE_MATCH_2)
+        set(_detected_standard ${CMAKE_MATCH_2})
+    endif()
+    # check for MSVC flags (/std:c++XX or /std:c++latest)
+    if(NOT _detected_standard AND MSVC)
+        string(REGEX MATCH "/std:c\\+\\+latest" _ "${CMAKE_CXX_FLAGS}")
+        if(CMAKE_MATCH_0)
+            set(_detected_standard latest) # map /std:c++latest to C++20
+        else()
+            string(REGEX MATCH "/std:c\\+\\+([0-9]+)" _ "${CMAKE_CXX_FLAGS}")
+            if(CMAKE_MATCH_1)
+                set(_detected_standard ${CMAKE_MATCH_1})
+            endif()
+        endif()
+    endif()
+    set(CMAKE_CXX_STANDARD ${_detected_standard} CACHE STRING "C++ standard to use (17, 20, etc.)")
+else()
+    set(CMAKE_CXX_STANDARD "${CMAKE_CXX_STANDARD}" CACHE STRING "C++ standard to use (17, 20, etc.)" FORCE)
+endif()
+
+## cxx flags
+### by default build is set for gnu linux environment
+if(NOT DEFINED CMAKE_CXX_FLAGS)
+    if(MSVC)
+        if(CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+            set(CMAKE_CXX_FLAGS "/std:c++latest /EHsc")
+        else()
+            set(CMAKE_CXX_FLAGS "/std:c++${CMAKE_CXX_STANDARD} /EHsc")
+        endif()
+    else()
+        set(CMAKE_CXX_FLAGS "-std=c++${CMAKE_CXX_STANDARD}")
+    endif()
+else()
+    # clean existing flags
+    string(REGEX REPLACE "-std=[^ ]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REGEX REPLACE "/std:c\\+\\+[^ ]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    string(REGEX REPLACE "/EH[^ ]+" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # remove old /EH flags
+    string(REPLACE "/MP" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")  # remove /MP
+    if(MSVC)
+        if(CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+            set(CMAKE_CXX_FLAGS "/std:c++latest /EHsc")
+        else()
+            set(CMAKE_CXX_FLAGS "/std:c++${CMAKE_CXX_STANDARD} /EHsc")
+        endif()
+    else()
+        set(CMAKE_CXX_FLAGS "-std=c++${CMAKE_CXX_STANDARD}")
+    endif()
 endif()
 
 ## rest of the world is debug except Release & MinSizeRel
@@ -116,7 +179,6 @@ list(APPEND
         # platforms:android
         # platforms:ios
 )
-
 
 # packages, lib related
 ## 
@@ -240,6 +302,11 @@ if(BEGE_VCPKG_FOUND)
     set(VCPKG_TARGET_TRIPLET "${BEGE_VCPKG_TRIPLET}")
 
     include("${BEGE_VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake")
+
+    ## should not happen
+    if(VCPKG_TARGET_TRIPLET STREQUAL "")
+        message(FATAL_ERROR "-- bege: this shouldn't happen")
+    endif()
 endif()
 set(BEGE_VCPKG_DIR_INSTALLED "${BEGE_VCPKG_DIR}/installed/${BEGE_VCPKG_TRIPLET}")
 if(EXISTS "${BEGE_VCPKG_DIR_INSTALLED}")
@@ -297,13 +364,7 @@ else()
     message(FATAL_ERROR "-- ${PROJECT_NAME}: openssl package not found")
 endif()
 
-# include(CheckIncludeFileCXX)
-# include(CMakeDependentOption)
-# include(GenerateExportHeader)
-# include(FindPackageHandleStandardArgs)
-
 # reserved: pre build
-message(STATUS "-- bege: TODO - pre build")
 
 # project lib
 ## object core lib
@@ -489,6 +550,7 @@ foreach(BEGE_TARGET ${PROJECT_NAME} bege_static bege_shared)
         target_compile_options(${BEGE_TARGET} PRIVATE
             /W4
             /wd4996
+            /EHsc
         )
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
         target_compile_options(${BEGE_TARGET} PRIVATE
@@ -530,16 +592,20 @@ foreach(BEGE_TARGET ${PROJECT_NAME} bege_static bege_shared)
         foreach(FILE ${BEGE_BUILD_FILES})
             add_custom_command(
                 TARGET ${BEGE_TARGET} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
                     ${FILE}
                     ${BEGE_BUILD_FILES_DIR}
                     COMMENT "copying ${file} to addons of bege"
-                COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    ${PROJECT_SOURCE_DIR}/addons
-                    ${PROJECT_SOURCE_DIR}/examples/addons
-                    COMMENT "copying addons to examples"
             )
         endforeach()
+        # Use a custom script or alternative method for directory copy if needed
+        add_custom_command(
+            TARGET ${BEGE_TARGET} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/addons
+                ${PROJECT_SOURCE_DIR}/examples/addons
+                COMMENT "copying addons to examples"
+        )
     endif()
 endforeach()
 
@@ -558,3 +624,11 @@ endif(BEGE_BUILD_TESTS)
 if(BEGE_BUILD_TOOLS)
     # n/a
 endif(BEGE_BUILD_TOOLS)
+
+# check
+## cxx flags
+if(CMAKE_CXX_FLAGS STREQUAL "")
+    message(WARNING "-- bege: cxx flags is empty for some reason")
+else()
+    message(NOTICE "-- bege: build info\n   -DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS}\"")
+endif()

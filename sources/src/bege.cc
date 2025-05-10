@@ -2,8 +2,7 @@
 
 using namespace godot;
 
-void initialize_bege(ModuleInitializationLevel pLevel)
-{
+void initialize_bege(ModuleInitializationLevel pLevel) {
     if (pLevel != MODULE_INITIALIZATION_LEVEL_CORE) { return; }
 
     // entry primary
@@ -21,8 +20,7 @@ void initialize_bege(ModuleInitializationLevel pLevel)
     UtilityFunctions::print("-- [bege]: initialized");
 }
 
-void terminate_bege(ModuleInitializationLevel pLevel)
-{
+void terminate_bege(ModuleInitializationLevel pLevel) {
     if (pLevel != MODULE_INITIALIZATION_LEVEL_CORE) { return; }
 
     // entry primary
@@ -40,11 +38,9 @@ void terminate_bege(ModuleInitializationLevel pLevel)
     UtilityFunctions::print("-- [bege]: terminated");
 }
 
-extern "C"
-{
-    // bege runtime
-    GDExtensionBool bege_entry_rt(GDExtensionInterfaceGetProcAddress get_proc_address, GDExtensionClassLibraryPtr library, GDExtensionInitialization *ptr_initialization)
-    {
+extern "C" {
+    // bege entry runtime
+    GDExtensionBool bege_entry_rt(GDExtensionInterfaceGetProcAddress get_proc_address, GDExtensionClassLibraryPtr library, GDExtensionInitialization *ptr_initialization) {
         GDExtensionBinding::InitObject init_object(get_proc_address, library, ptr_initialization);
 
         init_object.register_initializer(initialize_bege);
