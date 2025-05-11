@@ -4,6 +4,18 @@
 #include <string>
 #include <vector>
 
+// alias for char
+using chr_t = char;
+
+// alias for bool
+using bool_t = bool;
+
+// alias for unsigned char
+using uchr_t = unsigned char;
+
+// alias for void type
+using void_t = void;
+
 // alias for float as in 32 bits
 using float32_t = float;
 
@@ -14,9 +26,6 @@ using float64_t = double;
 
 // alias for std::vector<unsigned char> as buffer type
 using buffer_t = std::vector<unsigned char>;
-
-// alias for unsigned char
-using uchr_t = unsigned char;
 
 #if defined(__GNUC__) || defined(__clang__)
 #ifndef DEPRECATED
@@ -42,5 +51,13 @@ using uchr_t = unsigned char;
 #else
 // n/a
 #endif
+
+#ifndef INLNSTTC
+#define INLNSTTC inline static
+#endif // INLNSTTC
+
+#ifndef INLNSTTCCNST
+#define INLNSTTCCNST inline static const
+#endif // INLNSTTCCNST
 
 #endif // BEGE_BASE_HH

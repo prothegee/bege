@@ -25,8 +25,9 @@ module library treatment for backend godot project
 this backend treatment is automatically using environment variables,
 
 you need set your environment variables of or pass cmake config var:
-1. `VCPKG_DIR` to your install vcpkg directory
-2. `GODOT_CPP_DIR` to your godot-cpp directory, otherwise it error
+1. `VCPKG_DIR` to your vcpkg directory
+2. `GODOT_CPP_DIR` to your godot-cpp directory
+3. `ANDROID_NDK_HOME` to your android ndk directory
 
 ### dependencies to install
 

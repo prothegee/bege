@@ -24,8 +24,7 @@ namespace time_zone {
  * YYYY-MM-DD hh:mm:ss
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0,
-                      const bool &ISO8601 = false);
+std::string to_string(const int32_t& time_offset = 0, const bool& ISO8601 = false);
 
 } // namespace time_zone
 
@@ -37,7 +36,7 @@ namespace year {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current year as string
@@ -45,7 +44,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 } // namespace year
 
@@ -57,7 +56,7 @@ namespace month {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current month as string
@@ -65,7 +64,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset default 0
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get current month as human string, e.g. Jan, Jun, Jul, etc.
@@ -74,8 +73,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param time_offset default 0
  * @return std::string
  */
-std::string to_string_human(const int32_t &language = 1,
-                            const int32_t &time_offset = 0);
+std::string to_string_human(const int32_t& language = 1, const int32_t& time_offset = 0);
 
 } // namespace month
 
@@ -87,7 +85,7 @@ namespace day {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current day as string
@@ -95,7 +93,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 } // namespace day
 
@@ -107,7 +105,7 @@ namespace hour {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current hour as string
@@ -115,7 +113,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 } // namespace hour
 
@@ -127,7 +125,7 @@ namespace minute {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current minute as string
@@ -135,7 +133,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 } // namespace minute
 
@@ -147,7 +145,7 @@ namespace second {
  * @param time_offset default 0
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get current second as string
@@ -155,7 +153,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 } // namespace second
 
@@ -167,7 +165,7 @@ namespace YYYYMMDD {
  * @param time_offset
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get year, month, & day as yyyymmdd string
@@ -175,7 +173,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get year, month, & day as yyyy-mm-dd string
@@ -183,7 +181,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string_iso8601(const int32_t &time_offset = 0);
+std::string to_string_iso8601(const int32_t& time_offset = 0);
 
 } // namespace YYYYMMDD
 
@@ -195,7 +193,7 @@ namespace hhmmss {
  * @param time_offset
  * @return int32_t
  */
-int32_t to_int(const int32_t &time_offset = 0);
+int32_t to_int(const int32_t& time_offset = 0);
 
 /**
  * @brief get hour, minute, & second as hhmmss string
@@ -203,7 +201,7 @@ int32_t to_int(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get hour, minute, & second as hh:mm:ss sting
@@ -211,7 +209,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param time_offset
  * @return std::string
  */
-std::string to_string_human(const int32_t &time_offset = 0);
+std::string to_string_human(const int32_t& time_offset = 0);
 
 } // namespace hhmmss
 
@@ -223,7 +221,7 @@ namespace YYYYMMDDhhmmss {
  * @param time_offset
  * @return int64_t
  */
-int64_t to_int64(const int32_t &time_offset = 0);
+int64_t to_int64(const int32_t& time_offset = 0);
 
 /**
  * @brief convert YYYYMMDDhhmmss to millis
@@ -231,7 +229,7 @@ int64_t to_int64(const int32_t &time_offset = 0);
  * @param YYYYMMDDhhmmss
  * @return int64_t
  */
-int64_t to_millis(const std::string &YYYYMMDDhhmmss);
+int64_t to_millis(const std::string& YYYYMMDDhhmmss);
 
 /**
  * @brief use current date and time as millis
@@ -239,7 +237,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmss);
  * @param time_offset
  * @return int64_t
  */
-int64_t to_millis_now(const int32_t &time_offset = 0);
+int64_t to_millis_now(const int32_t& time_offset = 0);
 
 /**
  * @brief YYYYMMDDhhmmss to milis timestring, as YYYY-MM-DDThh:mm:ss or
@@ -249,8 +247,7 @@ int64_t to_millis_now(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
-                             const bool &use_time_sign = false);
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssms, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmss as is
@@ -258,7 +255,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get YYYYMMDDhhmmss as YYYY-MM-DDThh:mm:ss or YYYY-MM-DD hh:mm:ss if
@@ -268,8 +265,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_string_human(const int32_t &time_offset = 0,
-                            const bool &use_time_sign = false);
+std::string to_string_human(const int32_t& time_offset = 0, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmss without time offset limit
@@ -277,7 +273,7 @@ std::string to_string_human(const int32_t &time_offset = 0,
  * @param seconds_offset
  * @return std::string
  */
-std::string to_string_seconds_offset(const int32_t &seconds_offset = 0);
+std::string to_string_seconds_offset(const int32_t& seconds_offset = 0);
 
 } // namespace YYYYMMDDhhmmss
 
@@ -289,7 +285,7 @@ namespace YYYYMMDDhhmmssms {
  * @param time_offset
  * @return int64_t
  */
-int64_t to_int64(const int32_t &time_offset = 0);
+int64_t to_int64(const int32_t& time_offset = 0);
 
 /**
  * @brief convert YYYYMMDDhhmmssms to millis
@@ -297,7 +293,7 @@ int64_t to_int64(const int32_t &time_offset = 0);
  * @param YYYYMMDDhhmmssms
  * @return int64_t
  */
-int64_t to_millis(const std::string &YYYYMMDDhhmmssms);
+int64_t to_millis(const std::string& YYYYMMDDhhmmssms);
 
 /**
  * @brief get YYYYMMDDhhmmssms as millis
@@ -305,7 +301,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssms);
  * @param time_offset
  * @return int64_t
  */
-int64_t to_millis_now(const int32_t &time_offset = 0);
+int64_t to_millis_now(const int32_t& time_offset = 0);
 
 /**
  * @brief YYYYMMDDhhmmssms to milis timestring, as YYYY-MM-DDThh:mm:ss.xxx or
@@ -315,8 +311,7 @@ int64_t to_millis_now(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
-                             const bool &use_time_sign = false);
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssms, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssms as is string
@@ -324,7 +319,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get YYYYMMDDhhmmssms as YYYY-MM-DDThh:mm:ss.sss or YYYY-MM-DD
@@ -334,8 +329,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_string_human(const int32_t &time_offset = 0,
-                            const bool &use_time_sign = false);
+std::string to_string_human(const int32_t& time_offset = 0, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssms without time offset limit
@@ -343,7 +337,7 @@ std::string to_string_human(const int32_t &time_offset = 0,
  * @param seconds_offset
  * @return std::string
  */
-std::string to_string_second_offset(const int32_t &seconds_offset = 0);
+std::string to_string_second_offset(const int32_t& seconds_offset = 0);
 
 } // namespace YYYYMMDDhhmmssms
 
@@ -355,7 +349,7 @@ namespace YYYYMMDDhhmmssµs {
  * @param YYYYMMDDhhmmssµs
  * @return int64_t
  */
-int64_t to_millis(const std::string &YYYYMMDDhhmmssµs);
+int64_t to_millis(const std::string& YYYYMMDDhhmmssµs);
 
 /**
  * @brief get YYYYMMDDhhmmssµs as millis
@@ -363,7 +357,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssµs);
  * @param time_offset
  * @return int64_t
  */
-int64_t to_millis_now(const int32_t &time_offset = 0);
+int64_t to_millis_now(const int32_t& time_offset = 0);
 
 /**
  * @brief YYYYMMDDhhmmssµs to milis timestring, as YYYY-MM-DDThh:mm:ss.xxxxxx or
@@ -373,8 +367,7 @@ int64_t to_millis_now(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssµs,
-                             const bool &use_time_sign = false);
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssµs, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssµs as is string
@@ -382,7 +375,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssµs,
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get YYYYMMDDhhmmssµs as YYYY-MM-DDThh:mm:ss.ssssss or YYYY-MM-DD
@@ -392,8 +385,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_string_human(const int32_t &time_offset = 0,
-                            const bool &use_time_sign = false);
+std::string to_string_human(const int32_t& time_offset = 0, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssµs without time offset limit
@@ -401,7 +393,7 @@ std::string to_string_human(const int32_t &time_offset = 0,
  * @param seconds_offset
  * @return std::string
  */
-std::string to_string_second_offset(const int32_t &seconds_offset = 0);
+std::string to_string_second_offset(const int32_t& seconds_offset = 0);
 
 } // namespace YYYYMMDDhhmmssµs
 
@@ -413,7 +405,7 @@ namespace YYYYMMDDhhmmssns {
  * @param YYYYMMDDhhmmssns
  * @return int64_t
  */
-int64_t to_millis(const std::string &YYYYMMDDhhmmssns);
+int64_t to_millis(const std::string& YYYYMMDDhhmmssns);
 
 /**
  * @brief get YYYYMMDDhhmmssns as millis
@@ -421,7 +413,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssns);
  * @param time_offset
  * @return int64_t
  */
-int64_t to_millis_now(const int32_t &time_offset = 0);
+int64_t to_millis_now(const int32_t& time_offset = 0);
 
 /**
  * @brief YYYYMMDDhhmmssns to milis timestring, as YYYY-MM-DDThh:mm:ss.xxxxxxxxx
@@ -431,8 +423,7 @@ int64_t to_millis_now(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssns,
-                             const bool &use_time_sign = false);
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssns, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssns as is string
@@ -440,7 +431,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssns,
  * @param time_offset
  * @return std::string
  */
-std::string to_string(const int32_t &time_offset = 0);
+std::string to_string(const int32_t& time_offset = 0);
 
 /**
  * @brief get YYYYMMDDhhmmssns as YYYY-MM-DDThh:mm:ss.sssssssss or YYYY-MM-DD
@@ -450,8 +441,7 @@ std::string to_string(const int32_t &time_offset = 0);
  * @param use_time_sign
  * @return std::string
  */
-std::string to_string_human(const int32_t &time_offset = 0,
-                            const bool &use_time_sign = false);
+std::string to_string_human(const int32_t& time_offset = 0, const bool& use_time_sign = false);
 
 /**
  * @brief get YYYYMMDDhhmmssns without time offset limit
@@ -459,7 +449,7 @@ std::string to_string_human(const int32_t &time_offset = 0,
  * @param seconds_offset
  * @return std::string
  */
-std::string to_string_second_offset(const int32_t &seconds_offset = 0);
+std::string to_string_second_offset(const int32_t& seconds_offset = 0);
 
 } // namespace YYYYMMDDhhmmssns
 

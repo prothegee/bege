@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class
+name="replace_to_your_object"
+inherits="replace_to_godot_object"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd"
+>
+	<brief_description>
+        lib name object class
+	</brief_description>
+	<description>
+        name object class
+	</description>
+	<tutorials>
+        <!-- ////////////////////////////////////////////////////// -->
+	</tutorials>
+	<constants>
+        <!-- ////////////////////////////////////////////////////// -->
+	<members>
+        <!-- ////////////////////////////////////////////////////// -->
+	</members>
+    <methods>
+        <method name="method_func_name">
+			<description>
+				method_func_name
+			</description>
+			<return type="type_to_return" />
+		</method>
+
+        <!-- ////////////////////////////////////////////////////// -->
+	</methods>
+	<signals>
+        <!-- ////////////////////////////////////////////////////// -->
+	</signals>
+</class>

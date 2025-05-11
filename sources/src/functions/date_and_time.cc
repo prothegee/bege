@@ -31,7 +31,7 @@ namespace utc {
 
 namespace time_zone {
 
-std::string to_string(const int32_t &time_offset, const bool &ISO8601) {
+std::string to_string(const int32_t& time_offset, const bool& ISO8601) {
     std::string result;
     std::string negative_or_positive, utc_format;
     std::stringstream ss;
@@ -99,7 +99,7 @@ std::string to_string(const int32_t &time_offset, const bool &ISO8601) {
 
 namespace year {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -131,7 +131,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -167,7 +167,7 @@ std::string to_string(const int32_t &time_offset) {
 
 namespace month {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -203,7 +203,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -239,8 +239,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &language,
-                            const int32_t &time_offset) {
+std::string to_string_human(const int32_t& language, const int32_t& time_offset) {
     std::string result, tmp_str1;
 
     std::stringstream ss;
@@ -404,7 +403,7 @@ std::string to_string_human(const int32_t &language,
 
 namespace day {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -440,7 +439,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -480,7 +479,7 @@ std::string to_string(const int32_t &time_offset) {
 
 namespace hour {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -516,7 +515,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -556,7 +555,7 @@ std::string to_string(const int32_t &time_offset) {
 
 namespace minute {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -592,7 +591,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -632,7 +631,7 @@ std::string to_string(const int32_t &time_offset) {
 
 namespace second {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -668,7 +667,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -708,7 +707,7 @@ std::string to_string(const int32_t &time_offset) {
 
 namespace YYYYMMDD {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -740,7 +739,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stoi(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -772,7 +771,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_iso8601(const int32_t &time_offset) {
+std::string to_string_iso8601(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -808,7 +807,7 @@ std::string to_string_iso8601(const int32_t &time_offset) {
 
 namespace hhmmss {
 
-int32_t to_int(const int32_t &time_offset) {
+int32_t to_int(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -840,7 +839,7 @@ int32_t to_int(const int32_t &time_offset) {
     return std::stol(result);
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -872,7 +871,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &time_offset) {
+std::string to_string_human(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -908,7 +907,7 @@ std::string to_string_human(const int32_t &time_offset) {
 
 namespace YYYYMMDDhhmmss {
 
-int64_t to_int64(const int32_t &time_offset) {
+int64_t to_int64(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -940,7 +939,7 @@ int64_t to_int64(const int32_t &time_offset) {
     return std::stoll(result);
 }
 
-int64_t to_millis(const std::string &YYYYMMDDhhmmss) {
+int64_t to_millis(const std::string& YYYYMMDDhhmmss) {
     int64_t result;
 
     std::tm time = {};
@@ -967,7 +966,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmss) {
     return result;
 }
 
-int64_t to_millis_now(const int32_t &time_offset) {
+int64_t to_millis_now(const int32_t& time_offset) {
     const int32_t tz_offset = std::max(-12, std::min(time_offset, 14));
 
     auto now = std::chrono::system_clock::now();
@@ -978,19 +977,18 @@ int64_t to_millis_now(const int32_t &time_offset) {
         .count();
 }
 
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmss,
-                             const bool &use_time_sign) {
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmss, const bool& use_time_sign) {
     std::chrono::system_clock::time_point tp{
         std::chrono::milliseconds{YYYYMMDDhhmmss}};
     time_t tt = std::chrono::system_clock::to_time_t(tp);
-    std::tm *tm = std::gmtime(&tt);
+    std::tm* tm = std::gmtime(&tt);
     std::stringstream ss;
     ss << (use_time_sign ? std::put_time(tm, "%Y-%m-%dT%H:%M:%S")
                          : std::put_time(tm, "%Y-%m-%d %H:%M:%S"));
     return ss.str();
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1022,8 +1020,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &time_offset,
-                            const bool &use_time_sign) {
+std::string to_string_human(const int32_t& time_offset, const bool& use_time_sign) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1059,7 +1056,7 @@ std::string to_string_human(const int32_t &time_offset,
     return result;
 }
 
-std::string to_string_seconds_offset(const int32_t &seconds_offset) {
+std::string to_string_seconds_offset(const int32_t& seconds_offset) {
     std::string result;
     std::stringstream ss;
 
@@ -1090,7 +1087,7 @@ std::string to_string_seconds_offset(const int32_t &seconds_offset) {
 
 namespace YYYYMMDDhhmmssms {
 
-int64_t to_int64(const int32_t &time_offset) {
+int64_t to_int64(const int32_t& time_offset) {
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
 
@@ -1123,7 +1120,7 @@ int64_t to_int64(const int32_t &time_offset) {
     return std::stoll(ss.str());
 }
 
-int64_t to_millis(const std::string &YYYYMMDDhhmmssms) {
+int64_t to_millis(const std::string& YYYYMMDDhhmmssms) {
     int64_t result;
 
     std::tm time = {};
@@ -1150,7 +1147,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssms) {
     return result;
 }
 
-int64_t to_millis_now(const int32_t &time_offset) {
+int64_t to_millis_now(const int32_t& time_offset) {
     int32_t timezone_offset = std::max(-12, std::min(time_offset, 14));
     auto now = std::chrono::system_clock::now();
 
@@ -1161,12 +1158,11 @@ int64_t to_millis_now(const int32_t &time_offset) {
     return duration.count();
 }
 
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
-                             const bool &use_time_sign) {
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssms, const bool& use_time_sign) {
     std::chrono::system_clock::time_point tp{
         std::chrono::milliseconds{YYYYMMDDhhmmssms}};
     time_t tt = std::chrono::system_clock::to_time_t(tp);
-    std::tm *tm = std::gmtime(&tt);
+    std::tm* tm = std::gmtime(&tt);
     std::stringstream ss;
     ss << (use_time_sign ? std::put_time(tm, "%Y-%m-%dT%H:%M:%S")
                          : std::put_time(tm, "%Y-%m-%d %H:%M:%S"));
@@ -1177,7 +1173,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssms,
     return ss.str();
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1213,8 +1209,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &time_offset,
-                            const bool &use_time_sign) {
+std::string to_string_human(const int32_t& time_offset, const bool& use_time_sign) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1255,7 +1250,7 @@ std::string to_string_human(const int32_t &time_offset,
     return result;
 }
 
-std::string to_string_second_offset(const int32_t &seconds_offset) {
+std::string to_string_second_offset(const int32_t& seconds_offset) {
     std::string result;
     std::stringstream ss;
 
@@ -1290,7 +1285,7 @@ std::string to_string_second_offset(const int32_t &seconds_offset) {
 
 namespace YYYYMMDDhhmmssµs {
 
-int64_t to_millis(const std::string &YYYYMMDDhhmmssµs) {
+int64_t to_millis(const std::string& YYYYMMDDhhmmssµs) {
     int64_t result;
 
     std::tm time = {};
@@ -1317,7 +1312,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssµs) {
     return result;
 }
 
-int64_t to_millis_now(const int32_t &time_offset) {
+int64_t to_millis_now(const int32_t& time_offset) {
     int32_t timezone_offset = std::max(-12, std::min(time_offset, 14));
     auto now = std::chrono::system_clock::now();
 
@@ -1328,12 +1323,10 @@ int64_t to_millis_now(const int32_t &time_offset) {
     return duration.count();
 }
 
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssµs,
-                             const bool &use_time_sign) {
-    std::chrono::system_clock::time_point tp{
-        std::chrono::microseconds{YYYYMMDDhhmmssµs}};
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssµs, const bool& use_time_sign) {
+    std::chrono::system_clock::time_point tp{std::chrono::microseconds{YYYYMMDDhhmmssµs}};
     time_t tt = std::chrono::system_clock::to_time_t(tp);
-    std::tm *tm = std::gmtime(&tt);
+    std::tm* tm = std::gmtime(&tt);
     std::stringstream ss;
     ss << (use_time_sign ? std::put_time(tm, "%Y-%m-%dT%H:%M:%S")
                          : std::put_time(tm, "%Y-%m-%d %H:%M:%S"));
@@ -1344,7 +1337,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssµs,
     return ss.str();
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1380,8 +1373,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &time_offset,
-                            const bool &use_time_sign) {
+std::string to_string_human(const int32_t& time_offset, const bool& use_time_sign) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1422,7 +1414,7 @@ std::string to_string_human(const int32_t &time_offset,
     return result;
 }
 
-std::string to_string_second_offset(const int32_t &seconds_offset) {
+std::string to_string_second_offset(const int32_t& seconds_offset) {
     std::string result;
     std::stringstream ss;
 
@@ -1457,7 +1449,7 @@ std::string to_string_second_offset(const int32_t &seconds_offset) {
 
 namespace YYYYMMDDhhmmssns {
 
-int64_t to_millis(const std::string &YYYYMMDDhhmmssns) {
+int64_t to_millis(const std::string& YYYYMMDDhhmmssns) {
     int64_t result;
 
     std::tm time = {};
@@ -1484,7 +1476,7 @@ int64_t to_millis(const std::string &YYYYMMDDhhmmssns) {
     return result;
 }
 
-int64_t to_millis_now(const int32_t &time_offset) {
+int64_t to_millis_now(const int32_t& time_offset) {
     int32_t timezone_offset = std::max(-12, std::min(time_offset, 14));
     auto now = std::chrono::system_clock::now();
 
@@ -1495,8 +1487,7 @@ int64_t to_millis_now(const int32_t &time_offset) {
     return duration.count();
 }
 
-std::string to_millis_string(const int64_t &YYYYMMDDhhmmssns,
-                             const bool &use_time_sign) {
+std::string to_millis_string(const int64_t& YYYYMMDDhhmmssns, const bool& use_time_sign) {
     std::chrono::system_clock::time_point tp;
 #if defined(__GNUC__) || defined(__clang__)
     tp = std::chrono::system_clock::time_point{
@@ -1508,7 +1499,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssns,
 #endif
 
     time_t tt = std::chrono::system_clock::to_time_t(tp);
-    std::tm *tm = std::gmtime(&tt);
+    std::tm* tm = std::gmtime(&tt);
     std::stringstream ss;
     ss << (use_time_sign ? std::put_time(tm, "%Y-%m-%dT%H:%M:%S")
                          : std::put_time(tm, "%Y-%m-%d %H:%M:%S"));
@@ -1519,7 +1510,7 @@ std::string to_millis_string(const int64_t &YYYYMMDDhhmmssns,
     return ss.str();
 }
 
-std::string to_string(const int32_t &time_offset) {
+std::string to_string(const int32_t& time_offset) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1555,8 +1546,7 @@ std::string to_string(const int32_t &time_offset) {
     return result;
 }
 
-std::string to_string_human(const int32_t &time_offset,
-                            const bool &use_time_sign) {
+std::string to_string_human(const int32_t& time_offset, const bool& use_time_sign) {
     std::string result;
     std::stringstream ss;
     int32_t timezone_offset = time_offset;
@@ -1597,7 +1587,7 @@ std::string to_string_human(const int32_t &time_offset,
     return result;
 }
 
-std::string to_string_second_offset(const int32_t &seconds_offset) {
+std::string to_string_second_offset(const int32_t& seconds_offset) {
     std::string result;
     std::stringstream ss;
 
