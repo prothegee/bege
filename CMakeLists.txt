@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 set(BEGE_VERSION_MAJOR 0)
 set(BEGE_VERSION_MINOR 2)
 set(BEGE_VERSION_PATCH 0)
-set(BEGE_VERSION_RELEASE_DATE 20250509)
+set(BEGE_VERSION_RELEASE_DATE 20250512)
 
 # package project
 project(bege
@@ -155,6 +155,11 @@ if(NOT DEFINED BEGE_PROCESSOR_SYSTEM)
 endif()
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" BEGE_PROCESSOR_SYSTEM)
 
+## android ndk home
+if(NOT DEFINED BEGE_ANDROID_NDK_HOME)
+    set(BEGE_ANDROID_NDK_HOME)
+endif()
+
 # include base
 include(CheckIncludeFileCXX)
 include(GenerateExportHeader)
@@ -181,6 +186,7 @@ list(APPEND
         sources/src/functions/date_and_time.cc
         # nodes
         # objects
+        sources/src/objects/bege_console.cc
         # platforms:linux
         # platforms:windows
         # platforms:osx
@@ -196,6 +202,22 @@ if(NOT "${CMAKE_TOOLCHAIN_FILE}" STREQUAL "")
     include("${CMAKE_TOOLCHAIN_FILE}")
 else()
     message(NOTICE "-- bege: default toolchain from -DCMAKE_TOOLCHAIN_FILE is empty")
+endif()
+##
+## check: android ndk, by environment, & by cmake config arg
+set(BEGE_ANDROID_NDK_HOME_FOUND false)
+if(NOT "$ENV{ANDROID_NDK_HOME}" STREQUAL "")
+    message(NOTICE "-- bege: using env ANDROID_NDK_HOME \"$ENV{ANDROID_NDK_HOME}\"")
+    set(BEGE_ANDROID_NDK_HOME "$ENV{ANDROID_NDK_HOME}")
+    set(BEGE_ANDROID_NDK_HOME_FOUND true)
+else()
+    if(NOT "{ANDROID_NDK_HOME}" STREQUAL "")
+        message(NOTICE "-- bege: using arg ANDROID_NDK_HOME=\"${ANDROID_NDK_HOME}\"")
+        set(BEGE_ANDROID_NDK_HOME "${ANDROID_NDK_HOME}")
+        set(BEGE_ANDROID_NDK_HOME_FOUND true)
+    else()
+        message(NOTICE "-- bege: ANDROID_NDK_HOME not found")
+    endif()
 endif()
 ##
 ## triplet & processor
@@ -226,8 +248,10 @@ if(ANDROID)
     set(BEGE_BUILD_SYSTEM_TARGET 4)
     set(BEGE_BUILD_SYSTEM_TARGET_NAME "android")
 
-    message(STATUS "TODO: include dir from java")
-    message(STATUS "TODO: include dir from android")
+    # warn if android ndk empty
+    if(NOT BEGE_ANDROID_NDK_HOME_FOUND)
+        message(AUTHOR_WARNING "-- bege: toolchain seems for android, but ANDROID_NDK_HOME ( env or cmake config arg ) is emtpy")
+    endif()
 elseif(WIN32)
     # windows architectures
     if(BEGE_PROCESSOR_SYSTEM STREQUAL "x86_64")
@@ -325,7 +349,7 @@ if(EXISTS "${BEGE_VCPKG_DIR_INSTALLED}")
     include_directories(    "${BEGE_VCPKG_DIR_INSTALLED}/debug/bin")
     link_directories(BEFORE "${BEGE_VCPKG_DIR_INSTALLED}/debug/bin")
 
-    # include dirs
+    # link include dirs
     include_directories(    "${BEGE_VCPKG_DIR_INSTALLED}/include")
     link_directories(BEFORE "${BEGE_VCPKG_DIR_INSTALLED}/include")
     include_directories(    "${BEGE_VCPKG_DIR_INSTALLED}/debug/include")
@@ -344,8 +368,35 @@ else()
     message(AUTHOR_WARNING "-- ${PROJECT_NAME}: vpckg environment variable not found")
 endif()
 ##
+## android ndk usr
+if(BEGE_ANDROID_NDK_HOME_FOUND)
+    set(BEGE_ANDROID_NDK_HOME_PREBUILT)
+
+    # check system
+    if(BEGE_SYSTEM_NAME STREQUAL "windows")
+        # not sure some arch
+        set(BEGE_ANDROID_NDK_HOME_PREBUILT "${BEGE_ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/windows-x86_64")
+        message(NOTICE "-- bege: BEGE_ANDROID_NDK_HOME_PREBUILT is \"${BEGE_ANDROID_NDK_HOME_PREBUILT}\"")
+    elseif(BEGE_SYSTEM_NAME STREQUAL "linux")
+        set(BEGE_ANDROID_NDK_HOME_PREBUILT "${BEGE_ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64")
+        message(NOTICE "-- bege: BEGE_ANDROID_NDK_HOME_PREBUILT is \"${BEGE_ANDROID_NDK_HOME_PREBUILT}\"")
+    else()
+        message(AUTHOR_WARNING "-- bege: this BEGE_ANDROID_NDK_HOME_PREBUILT is not configured or not supported")
+    endif()
+
+    # # NOTE: existence need to verified, if not defined as anroid, it will overide existing lib & header
+    # # link include dir
+    # include_directories(    "${BEGE_ANDROID_NDK_HOME_PREBUILT}/sysroot/usr/include")
+    # link_directories(BEFORE "${BEGE_ANDROID_NDK_HOME_PREBUILT}/sysroot/usr/include")
+
+    # # link lib dir
+    # include_directories(    "${BEGE_ANDROID_NDK_HOME_PREBUILT}/sysroot/usr/lib")
+    # link_directories(BEFORE "${BEGE_ANDROID_NDK_HOME_PREBUILT}/sysroot/usr/lib")
+endif(BEGE_ANDROID_NDK_HOME_FOUND)
+##
 ## python3
 ## bege python3
+set(BEGE_PYTHON3_FOUND false)
 if(NOT DEFINED BEGE_PYTHON3_EXEC)
     set(BEGE_PYTHON3_EXEC)
 endif()
@@ -356,12 +407,14 @@ find_package(Python3)
 if(Python3_FOUND)
     message(NOTICE "-- bege: found python3 as \"${Python3_EXECUTABLE}\"")
     set(BEGE_PYTHON3_EXEC "${Python3_EXECUTABLE}")
+    set(BEGE_PYTHON3_FOUND true)
 else()
     if(Python3_EXECUTABLE STREQUAL "")
         message(FATAL_ERROR "-- bege: python3 required, if package not found, try add -DPython3_EXECUTABLE=to/path/python3_exec")
     else()
         message(NOTICE "-- bege: can't found python3 package, but able to found python3 exec")
         set(BEGE_PYTHON3_EXEC "${Python3_EXECUTABLE}")
+        set(BEGE_PYTHON3_FOUND true)
     endif()
 endif()
 ##
@@ -640,6 +693,32 @@ if(CMAKE_CXX_FLAGS STREQUAL "")
     message(WARNING "-- bege: cxx flags is empty for some reason")
 else()
     message(NOTICE "-- bege: build info\n   -DCMAKE_CXX_FLAGS=\"${CMAKE_CXX_FLAGS}\"")
+endif()
+
+# generate doc if debug
+if(BEGE_IS_DEBUG AND BEGE_PYTHON3_FOUND)
+    set(BEGE_GODOT_DOC_XML_GEN_SOURCE "${CMAKE_BINARY_DIR}/BEGE_GODOT_CPP/sources/src/bege_godot_docs.gen.cc")
+
+    file(REMOVE "${BEGE_GODOT_DOC_XML_GEN_SOURCE}")
+
+    if(NOT DEFINED BEGE_GODOT_DOC_XML_DIRS)
+        set(BEGE_GODOT_DOC_XML_DIRS)
+    endif()
+    list(APPEND BEGE_GODOT_DOC_XML_DIRS
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/xml/bege/*.xml"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sources/xml/objects/*.xml"
+    )
+
+    file(GLOB_RECURSE BEGE_GODOT_DOC_XML
+        LIST_DIRECTORIES YES
+        CONFIGURE_DEPENDS ${BEGE_GODOT_DOC_XML_DIRS}
+    )
+    string(REPLACE ";" "\", \"" BEGE_GODOT_DOC_XML_QUOTED "${BEGE_GODOT_DOC_XML}")
+    set(BEGE_GODOT_DOC_XML_QUOTED "[\"${BEGE_GODOT_DOC_XML_QUOTED}\"]")
+
+    generate_doc_source("${BEGE_GODOT_DOC_XML_GEN_SOURCE}" "${BEGE_GODOT_DOC_XML}")
+
+    target_sources(bege_shared PRIVATE "${BEGE_GODOT_DOC_XML_GEN_SOURCE}")
 endif()
 
 # final post build

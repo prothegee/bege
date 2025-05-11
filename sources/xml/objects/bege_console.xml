@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class
+name="bege_console"
+inherits="Object"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd"
+>
+    <brief_description>
+        bege: console object class
+	</brief_description>
+	<description>
+        object access to log/print
+	</description>
+	<tutorials>
+        <!-- ////////////////////////////////////////////////////// -->
+	</tutorials>
+	<constants>
+        <!-- ////////////////////////////////////////////////////// -->
+	<members>
+        <!-- ////////////////////////////////////////////////////// -->
+	</members>
+    <methods>
+        <method name="is_bege_console">
+			<description>
+				tell if this object is bege console
+			</description>
+			<return type="bool" />
+		</method>
+
+        <!-- ////////////////////////////////////////////////////// -->
+
+        <method name="log">
+			<description>
+				show log to godot console
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <method name="log_debug">
+			<description>
+				show log to godot console in debug
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <!-- ////////////////////////////////////////////////////// -->
+
+        <method name="warning">
+			<description>
+				show warning log to godot console
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <method name="warning_debug">
+			<description>
+				show warning log to godot console in debug
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <!-- ////////////////////////////////////////////////////// -->
+
+        <method name="error">
+			<description>
+				show error log to godot console
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <method name="error_debug">
+			<description>
+				show error log to godot console in debug
+			</description>
+            <param index="0" name="args" type="Array" />
+			<return type="void" />
+		</method>
+
+        <!-- ////////////////////////////////////////////////////// -->
+	</methods>
+	<signals>
+        <!-- ////////////////////////////////////////////////////// -->
+	</signals>
+</class>

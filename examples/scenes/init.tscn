@@ -1,3 +1,6 @@
-[gd_scene format=3 uid="uid://c0sf3qwsx5bk6"]
+[gd_scene load_steps=2 format=3 uid="uid://c0sf3qwsx5bk6"]
 
-[node name="Node" type="Node"]
+[ext_resource type="Script" uid="uid://ok3gas007hbt" path="res://sources/gd/init_scene.gd" id="1_wm5da"]
+
+[node name="init_node" type="Node"]
+script = ExtResource("1_wm5da")

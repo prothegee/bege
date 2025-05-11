@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://3m3a5fcy0s7u"]
+
+[ext_resource type="Script" uid="uid://e1t06wnr6cdl" path="res://sources/gd/example_bege_console.gd" id="1_ycb6e"]
+
+[node name="example-bege_console" type="Node"]
+script = ExtResource("1_ycb6e")
